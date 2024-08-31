@@ -22,7 +22,6 @@ app.get("/register", function(req,res){
 
 
 app.get("/profile", isLoggedIn ,async (req,res) => {
-    // let user = await userModel.findOne({email : req.user.email}).populate("posts");
    
     res.render("profile")
 })
@@ -74,7 +73,7 @@ app.post("/login", async function(req,res){
         if(result){
             let token = jwt.sign({email,userid : user._id}, "shhhh");
             res.cookie("token",token);
-            res.redirect("/profile");
+            res.redirect("/home");
         }
     })
 
@@ -103,4 +102,17 @@ function isLoggedIn(req,res,next){
     }
 }
 
+// ---------------------------------------------------------------------------
+
+app.get("/home",isLoggedIn,function(req,res){
+    res.render("home")
+})
+
+
+// ---------------------------------------------------------------------------
+
+app.get("/profile",isLoggedIn,function(req,res){
+    res.render("profile")
+})
+// ----------------------------------------------------------------------------
 app.listen(3000);
