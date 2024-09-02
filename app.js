@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const userModel = require("./models/user");
+const contentModel = require("./models/content");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const fs = require('fs')
 
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -13,7 +15,7 @@ app.use(express.static(path.join(__dirname,"public")));
 app.use(cookieParser())
 
 app.get("/", function(req,res){
-    res.send("Hello World");
+    res.redirect("/home");
 });
 
 app.get("/register", function(req,res){
@@ -88,18 +90,18 @@ app.get("/logout",function(req,res){
 
 // -------------------------------------------------------------------------
 
-function isLoggedIn(req,res,next){
-    let tokens = req.cookies.token;
+function isLoggedIn(req, res, next) {
+    // Check if the token exists in cookies
+    const token = req.cookies.token;
 
-    if(tokens === ""){
-        res.redirect("/login");
+    if (!token) {
+        // If no token, redirect to the login page
+        return res.redirect("/login");
     }
 
-    else{
-        let data = jwt.verify(tokens,"shhhh");
-        res.user = data;
-        next();
-    }
+    let data = jwt.verify(token,"shhhh")
+    req.user = data;
+    next();
 }
 
 // ---------------------------------------------------------------------------
@@ -114,5 +116,29 @@ app.get("/home",isLoggedIn,function(req,res){
 app.get("/profile",isLoggedIn,function(req,res){
     res.render("profile")
 })
+
+
 // ----------------------------------------------------------------------------
+
+app.get("/write",isLoggedIn,function(req,res){
+    res.render("write");
+});
+
+app.post("/write",isLoggedIn,function(req,res){
+    let {email,title,content} = req.body;
+
+    let article = contentModel.create({
+        email,
+        title,
+        content
+    });
+
+    res.redirect("/home");
+
+});
+
+// ---------------------------------------------------------------------------
+
+
+// ---------------------------------------------------------------------------
 app.listen(3000);
