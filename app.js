@@ -24,7 +24,6 @@ app.get("/register", function(req,res){
 
 
 app.get("/profile", isLoggedIn ,async (req,res) => {
-   
     res.render("profile")
 })
 
@@ -57,7 +56,6 @@ app.post("/register", async function(req,res){
     // res.send(user);
 });
 
-// -------------------------------------------------------------------------
 
 app.get("/login",function(req,res){
     res.render("login");
@@ -88,7 +86,6 @@ app.get("/logout",function(req,res){
     res.redirect("/login")
 })
 
-// -------------------------------------------------------------------------
 
 function isLoggedIn(req, res, next) {
     // Check if the token exists in cookies
@@ -104,27 +101,23 @@ function isLoggedIn(req, res, next) {
     next();
 }
 
-// ---------------------------------------------------------------------------
 
 app.get("/home",isLoggedIn,function(req,res){
     res.render("home")
 })
 
 
-// ---------------------------------------------------------------------------
-
 app.get("/profile",isLoggedIn,function(req,res){
     res.render("profile")
 })
 
-
-// ----------------------------------------------------------------------------
 
 app.get("/write",isLoggedIn,function(req,res){
     res.render("write");
 });
 
 app.post("/write",isLoggedIn,function(req,res){
+
     let {email,title,content} = req.body;
 
     let article = contentModel.create({
@@ -137,8 +130,6 @@ app.post("/write",isLoggedIn,function(req,res){
 
 });
 
-// ---------------------------------------------------------------------------
 
 
-// ---------------------------------------------------------------------------
 app.listen(3000);

@@ -12,6 +12,10 @@ const contentSchema = mongoose.Schema({
 
     title : String,
     content : String,
+
+    likes : [
+        {type : mongoose.Schema.Types.ObjectId, ref: "user"}
+    ]
   
 
 })
