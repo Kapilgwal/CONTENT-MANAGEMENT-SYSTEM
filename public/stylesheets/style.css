@@ -1,0 +1,25 @@
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .post {
+            border: 1px solid #ddd;
+            padding: 16px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .post-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .post-content {
+            margin-bottom: 10px;
+        }
+        .post-user {
+            font-size: 0.9em;
+            color: #555;
+        }
+        .post-likes {
+            font-size: 0.8em;
+            color: #888;
+        }

@@ -4,8 +4,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register User</title>
+    <title>Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <link rel="stylesheet" href="../public/stylesheets/style.css"> -->
+    <style>
+
+        #posts {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .post {
+            background-color: transparent;
+            border: 1px solid #dbdbdb;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-title {
+            font-weight: bold;
+            padding: 10px 15px;
+            font-size: 1.1em;
+            color: white;
+        }
+
+        .post-content {
+            padding: 15px;
+            font-size: 1em;
+            color: white;
+            border-top: 1px solid #efefef;
+            border-bottom: 1px solid #efefef;
+            background-color: transparent;
+        }
+
+        .post-user {
+            padding: 10px 15px;
+            font-size: 0.9em;
+            color: white;
+        }
+
+        .post-likes {
+            padding: 10px 15px;
+            font-size: 0.9em;
+            color: white;
+        }
+
+        /* Add some Instagram-like hover effect */
+        .post:hover {
+            transform: scale(1.02);
+            background-color: gray;
+            transition: transform 0.3s ease;
+        }
+
+        /* Add a minimal header */
+        header {
+            background-color: #fff;
+            border-bottom: 1px solid #dbdbdb;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 1.5em;
+            color: #262626;
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+    </style>
 </head>
 
 <body class="bg-zinc-900 text-white p-10">
@@ -13,13 +81,32 @@
     <div class="flex justify-evenly ">
         <h3 class="text-3xl">Content Craft</h3>
         <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/write">Write</a>
-        <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/notify">Messages</a>
+        <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/messages">Messages</a>
         <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/profile">Profile</a>
 
     </div>
     <div>
         <h1 class="text-2xl mb-5">Hello, Welcome to ContentCraft </h1>
     </div>
+
+    <h1>Posts</h1>
+    <div class=" text-white" id="posts">
+        <% contents.forEach(post => { %>
+            <div class="posts">
+                <div class="post-title"><%= post.title %></div>
+                <div class="post-content"><%= post.content %></div>
+                <div class="post-user">Posted by: <%= post.user ? post.username : 'Unknown' %></div>
+                <div class="post-likes">Liked by: 
+                    <% if (post.likes.length > 0) { %>
+                        <%= post.likes.map(user => user.username).join(', ') %>
+                    <% } else { %>
+                        No likes yet
+                    <% } %>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+
 
     
 

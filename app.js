@@ -1,135 +1,159 @@
 const express = require('express');
 const app = express();
-const userModel = require("./models/user");
-const contentModel = require("./models/content");
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const fs = require('fs')
 
+const userModel = require("./models/user");
+const contentModel = require("./models/content");
+
+// Set up middleware
 app.set("view engine", "ejs");
 app.use(express.json());
-app.use(express.urlencoded({extended : true}));
-app.use(express.static(path.join(__dirname,"public")));
-app.use(cookieParser())
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cookieParser());
 
-app.get("/", function(req,res){
+// Root route redirects to home
+app.get("/", (req, res) => {
     res.redirect("/home");
 });
 
-app.get("/register", function(req,res){
+// Render register page
+app.get("/register", (req, res) => {
     res.render("register");
-})
-
-
-app.get("/profile", isLoggedIn ,async (req,res) => {
-    res.render("profile")
-})
-
-
-app.post("/register", async function(req,res){
-    let {username,name,age,email,password} = req.body;
-    let user = await userModel.findOne({email : email})
-    if(user){
-        res.send("User already exists");
-    }
-    
-    bcrypt.genSalt(10, function(err,salt){
-        bcrypt.hash(password,salt, async function(err,hash){
-            
-            let user = userModel.create({
-                username,
-                name,
-                email,
-                age,
-                email,
-                password : hash
-            });
-            
-            let token = jwt.sign({email : email, userid : user._id}, "shhhh");
-            res.cookie("token", token);
-            res.send("registered");
-        })
-    })
-    
-    // res.send(user);
 });
 
+// Register a new user
+app.post("/register", async (req, res) => {
+    try {
+        const { username, name, age, email, password } = req.body;
+        const existingUser = await userModel.findOne({ email });
 
-app.get("/login",function(req,res){
-    res.render("login");
-})
-
-app.post("/login", async function(req,res){
-    let {email,password} = req.body;
-    
-    let user = await userModel.findOne({email});
-    if(!user){
-       return res.status(500).send("Something is Wrong");
-    }
-
-    bcrypt.compare(password,user.password, (err,result) => {
-        if(result){
-            let token = jwt.sign({email,userid : user._id}, "shhhh");
-            res.cookie("token",token);
-            res.redirect("/home");
+        if (existingUser) {
+            return res.status(400).send("User already exists");
         }
-    })
 
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
+        const user = await userModel.create({
+            username,
+            name,
+            age,
+            email,
+            password: hashedPassword
+        });
+
+        const token = jwt.sign({ email: user.email, userid: user._id }, "shhhh");
+        res.cookie("token", token);
+        res.send("Registered successfully");
+    } catch (error) {
+        res.status(500).send("Error registering user: " + error.message);
+    }
 });
 
+// Render login page
+app.get("/login", (req, res) => {
+    res.render("login");
+});
 
-app.get("/logout",function(req,res){
-    res.cookie("token","");
-    res.redirect("/login")
-})
+// Log in an existing user
+app.post("/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await userModel.findOne({ email });
 
+        if (!user) {
+            return res.status(400).send("Invalid email or password");
+        }
 
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (isMatch) {
+            const token = jwt.sign({ email: user.email, userid: user._id }, "shhhh");
+            res.cookie("token", token);
+            res.redirect("/home");
+        } else {
+            res.status(400).send("Invalid email or password");
+        }
+    } catch (error) {
+        res.status(500).send("Error logging in: " + error.message);
+    }
+});
+
+// Log out the user
+app.get("/logout", (req, res) => {
+    res.cookie("token", "");
+    res.redirect("/login");
+});
+
+// Middleware to check if the user is logged in
 function isLoggedIn(req, res, next) {
-    // Check if the token exists in cookies
     const token = req.cookies.token;
 
     if (!token) {
-        // If no token, redirect to the login page
         return res.redirect("/login");
     }
 
-    let data = jwt.verify(token,"shhhh")
-    req.user = data;
-    next();
+    try {
+        const data = jwt.verify(token, "shhhh");
+        req.user = data;
+        next();
+    } catch (error) {
+        res.status(401).send("Invalid token");
+    }
 }
 
+// Render home page with posts
+app.get("/home", isLoggedIn, async (req, res) => {
+    try {
+        const contents= await contentModel.find()
+            .populate('user', 'username')
+            .populate('likes', 'username');
 
-app.get("/home",isLoggedIn,function(req,res){
-    res.render("home")
-})
+        res.render("home", { contents});
+    } catch (error) {
+        res.status(500).send("Error fetching content: " + error.message);
+    }
+});
 
+// Render profile page
+app.get("/profile", isLoggedIn, (req, res) => {
+    res.render("profile");
+});
 
-app.get("/profile",isLoggedIn,function(req,res){
-    res.render("profile")
-})
-
-
-app.get("/write",isLoggedIn,function(req,res){
+// Render write page
+app.get("/write", isLoggedIn, (req, res) => {
     res.render("write");
 });
 
-app.post("/write",isLoggedIn,function(req,res){
+// Submit a new post
+app.post("/write", isLoggedIn, async (req, res) => {
+    try {
+        const { title, content } = req.body;
+        const userId = req.user.userid;
 
-    let {email,title,content} = req.body;
+        await contentModel.create({
+            user: userId,
+            title,
+            content
+        });
 
-    let article = contentModel.create({
-        email,
-        title,
-        content
-    });
-
-    res.redirect("/home");
-
+        res.redirect("/home");
+    } catch (error) {
+        res.status(500).send("Error creating post: " + error.message);
+    }
 });
 
+// Render messages page
+app.get("/messages", isLoggedIn, (req, res) => {
+    res.render("messages");
+});
 
-
-app.listen(3000);
+// Start the server
+app.listen(3000, () => {
+    console.log("Server is running on port 3000");
+});
