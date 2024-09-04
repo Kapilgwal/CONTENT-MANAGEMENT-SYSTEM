@@ -148,12 +148,29 @@ app.post("/write", isLoggedIn, async (req, res) => {
     }
 });
 
+app.get("/read/:id", async (req, res) => {
+    try {
+        // Fetch the post by its ID and populate the 'user' field
+        let post = await contentModel.findOne({ _id: req.params.id }).populate("user");
+
+        // Check if the post exists
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Render the 'read' view and pass the post data
+        res.render("read", { post });
+    } catch (err) {
+        // Handle any errors that occur during the process
+        console.error(err);
+        res.status(500).send('An error occurred while retrieving the post');
+    }
+});
+
 // Render messages page
 app.get("/messages", isLoggedIn, (req, res) => {
     res.render("messages");
 });
 
 // Start the server
-app.listen(3000, () => {
-    console.log("Server is running on port 3000");
-});
+app.listen(3000);

@@ -35,8 +35,8 @@
             padding: 15px;
             font-size: 1em;
             color: white;
-            border-top: 1px solid #efefef;
-            border-bottom: 1px solid #efefef;
+            border-top: 1px solid white;
+            border-bottom: 1px solid bottom;
             background-color: transparent;
         }
 
@@ -83,18 +83,20 @@
         <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/write">Write</a>
         <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/messages">Messages</a>
         <a class="bg-blue-800 rounded-md px-3 py-2 text-sm mb-5 inline-block" href="/profile">Profile</a>
-
+        
     </div>
     <div>
         <h1 class="text-2xl mb-5">Hello, Welcome to ContentCraft </h1>
     </div>
 
     <h1>Posts</h1>
-    <div class=" text-white" id="posts">
+    <div class="text-white" id="posts">
         <% contents.forEach(post => { %>
             <div class="posts">
                 <div class="post-title"><%= post.title %></div>
-                <div class="post-content"><%= post.content %></div>
+                <div class="post-content">
+                    <%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %>
+                </div>
                 <div class="post-user">Posted by: <%= post.user ? post.username : 'Unknown' %></div>
                 <div class="post-likes">Liked by: 
                     <% if (post.likes.length > 0) { %>
@@ -104,8 +106,10 @@
                     <% } %>
                 </div>
             </div>
-        <% }); %>
+            <a href="/read/<%= post._id %>" class="read-more">Read More</a>
+            <% }); %>
     </div>
+
 
 
     
