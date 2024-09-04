@@ -167,6 +167,31 @@ app.get("/read/:id", async (req, res) => {
     }
 });
 
+app.get("/update/:id", isLoggedIn, async (req,res) => {
+    try {
+        // Fetch the post by its ID and populate the 'user' field
+        let post = await contentModel.findOne({ _id: req.params.id }).populate("user");
+
+        // Check if the post exists
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Render the 'read' view and pass the post data
+        res.render("update", { post });
+    } catch (err) {
+        // Handle any errors that occur during the process
+        console.error(err);
+        res.status(500).send('An error occurred while retrieving the post');
+    }
+})
+
+app.post("/update/:id", isLoggedIn, async (req,res) => {
+    let post = await contentModel.findOneAndUpdate({ _id: req.params.id }, {content : req.body.content,title : req.body.title}).populate("user");
+    res.redirect("/home");  
+})
+
+
 // Render messages page
 app.get("/messages", isLoggedIn, (req, res) => {
     res.render("messages");
