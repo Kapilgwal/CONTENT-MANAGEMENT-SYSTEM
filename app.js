@@ -8,6 +8,7 @@ const path = require('path');
 
 const userModel = require("./models/user");
 const contentModel = require("./models/content");
+const content = require('./models/content');
 
 // Set up middleware
 app.set("view engine", "ejs");
@@ -112,7 +113,8 @@ app.get("/home", isLoggedIn, async (req, res) => {
     try {
         const contents= await contentModel.find()
             .populate('user', 'username')
-            .populate('likes', 'username');
+            .populate('likes', 'username')
+            .populate('username','username');
 
         res.render("home", { contents});
     } catch (error) {
@@ -191,6 +193,15 @@ app.post("/update/:id", isLoggedIn, async (req,res) => {
     res.redirect("/home");  
 })
 
+app.get("/delete/:id", isLoggedIn, async (req,res) => {
+    let post = await contentModel.deleteOne({_id : req.params.id});
+    res.redirect("/home");  
+})
+
+app.get("/summarise/:id", isLoggedIn, async (req,res) => {
+    let post = await contentModel.findOne({_id : req.params.id}).populate("user");
+    res.render("summarise",{post});
+})
 
 // Render messages page
 app.get("/messages", isLoggedIn, (req, res) => {

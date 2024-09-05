@@ -9,7 +9,10 @@ const contentSchema = mongoose.Schema({
         type : Date,
         default : Date.now
     },
-
+    username : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'user'
+    },
     title : String,
     content : String,
 

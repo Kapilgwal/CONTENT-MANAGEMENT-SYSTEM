@@ -6,20 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Read Article</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Hide scrollbar for Webkit browsers */
+        textarea::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for other browsers */
+        textarea {
+            -ms-overflow-style: none; /* IE and Edge */
+            overflow: hidden; /* Firefox */
+        }
+    </style>
 </head>
 
 <body>
     <div class="min-h-screen bg-gray-900 text-white flex flex-col items-center py-12">
-        <div class="w-full max-w-3xl mx-auto p-6 bg-gray-800 rounded-lg shadow-lg">
+        <div class="w-full max-w-3xl mx-auto p-6 bg-gray-800 shadow-lg">
+            <a  class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-md text-sm" href="/home">Home</a>
             <h1 class="text-3xl font-bold mb-6 text-center text-yellow-500">Read Post</h1>
-            <a href="/home">Home</a>
             
             <form class="space-y-6">
                 <!-- Title Field -->
                 <div>
                     <label for="title" class="block text-sm font-medium text-gray-400">Title</label>
                     <textarea id="title" name="title" readonly
-                        class="block w-full p-4 resize-none bg-transparent border-2 border-grey-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 ease-in-out cursor-not-allowed text-gray-400">
+                        class="block w-full p-4 resize-none bg-transparent border-2 border-grey-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 ease-in-out text-gray-400">
                         <%= post.title %>
                     </textarea>
                 </div>
@@ -27,16 +39,40 @@
                 <!-- Content Field -->
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-400">Content</label>
-                    <textarea id="content" name="content" readonly
-                        class="block w-full p-4 resize-none h-64 bg-transparent border-2 border-gray-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 ease-in-out cursor-not-allowed text-gray-400">
+                    <textarea id="content-<%= post._id %>" name="content" readonly
+                        class="block w-full p-4 resize-none bg-transparent border-2 border-gray-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 ease-in-out text-gray-400">
                         <%= post.content %>
                     </textarea>
+                    
                 </div>
             </form>
         </div>
+        <div class="w-full max-w-3xl mx-auto p-6 bg-gray-800 shadow-lg">
+        <a class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-md text-sm" href="/summarise/<%= post._id %>">Summarise</a>
+        <a class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-md text-sm" href="/explain/<%= post._id %>">Explain</a>
+        </div>
     </div>
     
-
+    <script>
+        function adjustTextareaHeight(textarea) {
+            // Reset textarea height to auto so it can shrink
+            textarea.style.height = 'auto';
+            // Set the height according to the scrollHeight
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            // Find all textareas and adjust height for each
+            const textareas = document.querySelectorAll('textarea[id^="content-"]');
+            textareas.forEach(textarea => {
+                adjustTextareaHeight(textarea);
+    
+                // Optionally, you can make it adjust as the user types, though it's read-only
+                textarea.addEventListener('input', () => adjustTextareaHeight(textarea));
+            });
+        });
+    </script>
+    
 
 </body>
 
