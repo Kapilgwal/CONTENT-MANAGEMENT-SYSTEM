@@ -3,21 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register User</title>
+    <title>Create Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+    <div class="flex items-center justify-center min-h-screen bg-zinc-900 text-white">
+        <div class="w-full max-w-md p-8 bg-zinc-800 rounded-lg shadow-lg">
+            <h3 class="text-3xl mb-6 text-yellow-500 text-center">Create Account</h3>
+            <form method="post" action="/register">
+                <div class="mb-4">
+                    <input class="w-full p-3 bg-transparent border-2 border-zinc-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 text-white placeholder-zinc-500" type="text" placeholder="Name" name="name" required>
+                </div>
+                <div class="mb-4">
+                    <input class="w-full p-3 bg-transparent border-2 border-zinc-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 text-white placeholder-zinc-500" type="text" placeholder="Username" name="username" required>
+                </div>
+                <div class="mb-4">
+                    <input class="w-full p-3 bg-transparent border-2 border-zinc-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 text-white placeholder-zinc-500" type="number" placeholder="Age" name="age" required>
+                </div>
+                <div class="mb-4">
+                    <input class="w-full p-3 bg-transparent border-2 border-zinc-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 text-white placeholder-zinc-500" type="email" placeholder="Email" name="email" required>
+                </div>
+                <div class="mb-6">
+                    <input class="w-full p-3 bg-transparent border-2 border-zinc-700 rounded-md outline-none focus:border-yellow-500 transition duration-300 text-white placeholder-zinc-500" type="password" placeholder="Password" name="password" required>
+                </div>
+                <input class="w-full mb-5 p-3 bg-yellow-500 text-zinc-900 font-semibold rounded-md hover:bg-yellow-600 transition duration-300 cursor-pointer" type="submit" value="Create Account">
+                <a class="w-full mt-5 p-3 bg-yellow-500 text-zinc-900 font-semibold rounded-md hover:bg-yellow-600 transition duration-300 cursor-pointer" href="/login">Log In</a>
 
-    <div class="w-full min-h-screen bg-zinc-900 text-white p-10">
-        <h3 class="text-3xl mb-5">Create Account</h3>
-        <form method="post" action="/register">
-            <input class="p-3 m-2 outline-none bg-transparent border-2 border-zinc-800 rounded-md" type="text" placeholder="name" name="name">
-            <input class="p-3 m-2 outline-none bg-transparent border-2 border-zinc-800 rounded-md" type="text" placeholder="usenname" name="usenname">
-            <input class="p-3 m-2 outline-none bg-transparent border-2 border-zinc-800 rounded-md" type="number" placeholder="age" name="age">
-            <input class="p-3 m-2 outline-none bg-transparent border-2 border-zinc-800 rounded-md" type="email" placeholder="email" name="email">
-            <input class="p-3 m-2 outline-none bg-transparent border-2 border-zinc-800 rounded-md" type="password" placeholder="password" name="password">
-            <input class="p-3 m-2 outline-none bg-blue-500 border-2 border-zinc-800 rounded-md" type="submit" value="submit">
-        </form>
+            </form>
+        </div>
     </div>
 </body>
 </html>
