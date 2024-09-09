@@ -11,39 +11,51 @@
 <body class="bg-gray-900 text-white">
 
     <!-- Header section with navigation -->
-    <header class="bg-gray-800 sticky top-0 z-50 p-4 shadow-md">
+    <header class="bg-gray-800 sticky top-0 z-50 p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-white">ContentCraft</h1>
-            <nav class="space-x-4">
-                <a href="/write" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-sm">Write</a>
-                <a href="/messages" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-sm">Messages</a>
-                <a href="/profile" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-sm">Profile</a>
+            <h1 class="text-3xl font-extrabold text-white">ContentCraft</h1>
+            <nav class="space-x-6">
+                <a href="/write" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-sm transition duration-300">
+                    Write</a>
+                <a href="/messages" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-sm transition duration-300">
+                    Messages</a>
+                <a href="/profile" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-sm transition duration-300">
+                    Profile</a>
             </nav>
         </div>
     </header>
 
     <!-- Welcome section -->
-    <section class="container mx-auto p-8 text-center">
-        <h2 class="text-4xl font-semibold mb-4">Hello, Welcome to ContentCraft</h2>
-        <p class="text-gray-400 text-lg">Explore, read, and share your thoughts with the community.</p>
+    <section class="container mx-auto text-center py-16">
+        <h2 class="text-5xl font-bold mb-4 text-white">Welcome to ContentCraft</h2>
+        <p class="text-gray-400 text-lg max-w-3xl mx-auto">
+            Discover and share amazing stories. Craft your content, engage with the community, and inspire others!
+        </p>
     </section>
 
-    <!-- Posts section -->
+    <!-- Recent Posts section -->
     <section class="container mx-auto p-8">
-        <h2 class="text-3xl font-bold mb-6">Recent Posts</h2>
-        <div id="posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <h2 class="text-3xl font-bold mb-8 text-white">Recent Posts</h2>
+        <div id="posts" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <% contents.forEach(post => { %>
-                <div class="post bg-gray-800 rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
-                    <div class="p-4">
-                        <h3 class="post-title text-xl font-semibold mb-2"><%= post.title %></h3>
-                        <p class="post-content text-gray-300 mb-4">
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300">
+                    <!-- Image placeholder (optional) -->
+                    <div class="h-48 bg-gray-700">
+                        <img src="https://via.placeholder.com/400" alt="Post image" class="object-cover w-full h-full">
+                    </div>
+                    <!-- Post Content -->
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-white truncate mb-2">
+                            <%= post.title %>
+                        </h3>
+                        <p class="text-gray-300 text-sm mb-4">
                             <%= post.content.length > 30 ? post.content.substring(0, 30) + '...' : post.content %>
                         </p>
-                        <div class="post-user text-sm text-gray-400">
+                        <div class="text-sm text-gray-500">
                             Posted by: <%= post.username ? post.username : 'Unknown' %>
                         </div>
-                        <div class="post-likes text-sm text-gray-400 mt-2">
-                            Liked by: 
+                        <div class="text-sm text-gray-400 mt-2">
+                            Liked by:
                             <% if (post.likes.length > 0) { %>
                                 <%= post.likes.map(user => user.username).join(', ') %>
                             <% } else { %>
@@ -51,10 +63,11 @@
                             <% } %>
                         </div>
                     </div>
-                    <div class="flex justify-between p-4 bg-gray-700 text-blue-400 text-sm">
-                        <a href="/read/<%= post._id %>" class="hover:text-blue-300">Read Article </a>
-                        <a href="/update/<%= post._id %>" class="hover:text-blue-300">Update</a>
-                        <a href="/delete/<%= post._id %>" class="hover:text-blue-300">Delete</a>
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between px-6 py-4 bg-gray-700 text-blue-400 text-sm">
+                        <a href="/read/<%= post._id %>" class="hover:text-blue-300 transition">Read Article</a>
+                        <a href="/like/<%= post._id %>" class="hover:text-blue-300 transition">Like Article</a>
+                        <a href="/comment/<%= post._id %>" class="hover:text-blue-300 transition">Comment On Article</a>
                     </div>
                 </div>
             <% }); %>
@@ -62,7 +75,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 p-4 mt-10">
+    <footer class="bg-gray-800 py-6 mt-16">
         <div class="container mx-auto text-center text-gray-400">
             &copy; 2024 ContentCraft. All rights reserved.
         </div>

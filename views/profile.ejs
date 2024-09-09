@@ -1,20 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="flex items-center justify-center min-h-screen bg-zinc-900 text-white">
-        <div class="text-center">
-            <h1 class="text-4xl mb-8 text-yellow-500">Hello, Kapil</h1>
-            <div class="space-y-4">
-                <a class="bg-yellow-500 text-zinc-900 font-semibold rounded-md px-4 py-2 text-sm hover:bg-yellow-600 transition duration-300 inline-block" href="/home">Home</a>
-                <a class="bg-red-500 text-white font-semibold rounded-md px-4 py-2 text-sm hover:bg-red-600 transition duration-300 inline-block" href="/logout">Logout</a>
+
+<body class="bg-zinc-900 text-white">
+    <!-- Main Container -->
+    <div class="flex flex-col items-center min-h-screen p-6 space-y-8">
+        <!-- Profile Section -->
+        <div class="w-full max-w-5xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-6">
+                <!-- Profile Image -->
+                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-500 overflow-hidden">
+                    <img src="https://via.placeholder.com/150" alt="Profile Image" class="w-full h-full object-cover">
+                </div>
+                <!-- User Info -->
+                <div class="text-left">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Kapil Gwal</h1>
+                    <div class="mt-4 flex space-x-6">
+                        <div>
+                            <span class="text-xl font-semibold text-white">32</span>
+                            <span class="text-gray-400 text-sm">Posts</span>
+                        </div>
+                        <div>
+                            <span class="text-xl font-semibold text-white">540</span>
+                            <span class="text-gray-400 text-sm">Followers</span>
+                        </div>
+                        <div>
+                            <span class="text-xl font-semibold text-white">300</span>
+                            <span class="text-gray-400 text-sm">Following</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="space-x-4">
+                <a class="bg-yellow-500 hover:bg-yellow-600 text-zinc-900 font-semibold rounded-lg px-6 py-2 transition duration-300 inline-block"
+                    href="/home">Home</a>
+                <a class="bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg px-6 py-2 transition duration-300 inline-block"
+                    href="/logout">Logout</a>
             </div>
         </div>
+
+        <!-- Posts Grid Section -->
+        <section class="w-full max-w-5xl mx-auto">
+            <h2 class="text-2xl font-semibold text-gray-300 mb-6">Your Posts</h2>
+            <div id="posts" class="grid grid-cols-3 gap-4 sm:gap-6">
+                <% contents.forEach(post => { %>
+                    <!-- Post Item -->
+                    <div class="relative group bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition duration-300">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                            <a href="/read/<%= post._id %>" class="text-white font-semibold px-4 py-2 bg-blue-500 rounded-md transition m-3 hover:bg-blue-600">Read</a>
+                            <a href="/update/<%= post._id %>" class="text-white font-semibold px-4 py-2 bg-blue-500 rounded-md transition m-3 hover:bg-blue-600">Update</a>
+                            <a href="/delete/<%= post._id %>" class="text-white font-semibold px-4 py-2 bg-blue-500 rounded-md transition m-3 hover:bg-blue-600">Delete</a>
+                        </div>
+                        <img src="https://via.placeholder.com/400" alt="Post Image" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold text-white mb-2 truncate">
+                                <%= post.title %>
+                            </h3>
+                            <p class="text-gray-400 text-sm mb-2">
+                                <%= post.content.length > 30 ? post.content.substring(0, 30) + '...' : post.content %>
+                            </p>
+                            <div class="text-sm text-gray-500">
+                                Posted by: <%= post.username ? post.username : 'Unknown' %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </section>
     </div>
 </body>
+
 </html>

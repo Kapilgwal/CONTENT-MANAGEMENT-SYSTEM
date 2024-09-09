@@ -8,7 +8,6 @@ const path = require('path');
 
 const userModel = require("./models/user");
 const contentModel = require("./models/content");
-const content = require('./models/content');
 
 // Set up middleware
 app.set("view engine", "ejs");
@@ -123,8 +122,10 @@ app.get("/home", isLoggedIn, async (req, res) => {
 });
 
 // Render profile page
-app.get("/profile", isLoggedIn, (req, res) => {
-    res.render("profile");
+app.get("/profile", isLoggedIn,async (req, res) => {
+    let {email} = req.body;
+    const contents = await contentModel.find().populate('user','username').populate('likes','username').populate('username','username');
+    res.render("profile",{contents});
 });
 
 // Render write page
@@ -200,7 +201,25 @@ app.get("/delete/:id", isLoggedIn, async (req,res) => {
 
 app.get("/summarise/:id", isLoggedIn, async (req,res) => {
     let post = await contentModel.findOne({_id : req.params.id}).populate("user");
+    let title = post.title;
+    let content = post.content;
+
+
+
     res.render("summarise",{post});
+})
+
+app.get("/like/:id", isLoggedIn, async (req,res) => {
+    let post = await contentModel.findOne({_id : req.params.id}).populate("user");
+    if(post.likes.indexOf(req.user.userId) === -1){
+        post.likes.push(req.user.userId);
+    }
+    else{
+        post.likes.splice(post.likes.indexOf(req.user.userId),1);
+    }
+
+    await post.save();
+    // res.redirect("/home");
 })
 
 // Render messages page
