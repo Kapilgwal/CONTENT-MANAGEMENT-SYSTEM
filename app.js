@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-
+const axios = require('axios');
 const userModel = require("./models/user");
 const contentModel = require("./models/content");
 
@@ -199,14 +199,27 @@ app.get("/delete/:id", isLoggedIn, async (req,res) => {
     res.redirect("/home");  
 })
 
+
+
 app.get("/summarise/:id", isLoggedIn, async (req,res) => {
     let post = await contentModel.findOne({_id : req.params.id}).populate("user");
     let title = post.title;
     let content = post.content;
+    let blogPost;
 
+    try {
+        const response = await axios.post('http://localhost:5000/generate-blog', {
+            input_text: content,
+            no_words: 100,
+            blog_style: 'Researcher'
+        });
 
-
-    res.render("summarise",{post});
+        blogPost = response.data.result;
+    } catch (error) {
+        // res.status(500).send("Error generating blog.");
+    }
+  
+    res.send({blogPost});
 })
 
 app.get("/like/:id", isLoggedIn, async (req,res) => {
